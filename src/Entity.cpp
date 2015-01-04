@@ -5,7 +5,7 @@ Entity::Entity(int type, bool collidable, int x, int y, int w, int h, Uint8 red,
     this->type = type;
     this->collidable = collidable;
 
-    rect = { x, y, w, (type == 1) ? RACKET_HEIGHT : h };
+    rect = { x, y, w, h };
 
     this->x = (float)x;
     this->y = (float)y;
@@ -61,12 +61,12 @@ void Entity::OnLoop()
     {
         /* Calculates the ball's horizontal and vertical speed */
 
-        SpeedY = BALL_SPEED * -cos(angle * M_PI/180) * FPS::FPSControl.getSpeedFactor();
-        SpeedX = BALL_SPEED * sin(angle * M_PI/180) * FPS::FPSControl.getSpeedFactor();
+        SpeedY = BALL_SPEED * -cos(angle * M_PI/180) * Speed::SpeedControl.GetSpeedFactor();
+        SpeedX = BALL_SPEED * sin(angle * M_PI/180) * Speed::SpeedControl.GetSpeedFactor();
     }
     else if(type == RACKET)
     {
-        SpeedY = upOrDown * RACKET_SPEED * FPS::FPSControl.getSpeedFactor();
+        SpeedY = upOrDown * RACKET_SPEED * Speed::SpeedControl.GetSpeedFactor();
         upOrDown = 0;
     }
 }

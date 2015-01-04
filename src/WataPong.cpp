@@ -14,8 +14,9 @@ int WataPong::OnExecute()
 
     while(Running)
     {
+        Speed::SpeedControl.OnLoop();
         Running = wataWorld.OnLoop();
-        OnRender();
+        SDL_Delay(20);
     }
 
     return 0;
@@ -40,28 +41,33 @@ bool WataPong::OnInit()
 
     wataWorld.addEntity(new Entity(BALL, 1, 385, 235, 30, 30, 0x2B, 0x57, 0x9A, 0xFF));
 
+    std::thread (&WataPong::OnRender, this).detach();
+
     return true;
 }
 
 void WataPong::OnRender()
 {
-    SDL_SetRenderDrawColor(wataRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_RenderClear(wataRenderer);
-
-    std::vector<Entity> *entityList = wataWorld.getEntityList();
-
-    for(int i = 0; i < (int)entityList->size(); ++i)
+    while(Running)
     {
-        SDL_SetRenderDrawColor(wataRenderer,
-                               entityList->at(i).getRed(),
-                               entityList->at(i).getGreen(),
-                               entityList->at(i).getBlue(),
-                               entityList->at(i).getAlpha());
+        SDL_SetRenderDrawColor(wataRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+        SDL_RenderClear(wataRenderer);
 
-        SDL_RenderFillRect(wataRenderer, entityList->at(i).getRect());
+        std::vector<Entity> *entityList = wataWorld.getEntityList();
+
+        for(int i = 0; i < (int)entityList->size(); ++i)
+        {
+            SDL_SetRenderDrawColor(wataRenderer,
+                                   entityList->at(i).getRed(),
+                                   entityList->at(i).getGreen(),
+                                   entityList->at(i).getBlue(),
+                                   entityList->at(i).getAlpha());
+
+            SDL_RenderFillRect(wataRenderer, entityList->at(i).getRect());
+        }
+
+        SDL_RenderPresent(wataRenderer);
     }
-
-    SDL_RenderPresent(wataRenderer);
 }
 
 void WataPong::OnCleanUp()

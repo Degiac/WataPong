@@ -15,8 +15,9 @@ class GameWorld
     protected:
     private:
         void CollisionChecker();
-        void OnEvent(SDL_Event &currEvent);
+        void OnEvent();
 
+        bool paused;
         int ballIdx;
         int racket1Idx;
         int racket2Idx;

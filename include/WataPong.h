@@ -5,12 +5,12 @@
 #include "Entity.h"
 #include <SDL.h>
 #include <vector>
+#include <thread>
 
 class WataPong
 {
     public:
         WataPong();
-
         int OnExecute();
         bool OnInit();
         void OnRender();

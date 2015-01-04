@@ -5,12 +5,14 @@
 
 #include <SDL.h>
 #include <cmath>
-#include "FPS.h"
+#include "Speed.h"
 
 const int MAX_ANGLE = 60;
 const int RACKET_HEIGHT = 100;
 const int BALL_SPEED = 50;
-const int RACKET_SPEED = 20;
+const int RACKET_SPEED = 40;
+const int UP = -1;
+const int DOWN = 1;
 
 enum
 {
@@ -30,6 +32,7 @@ class Entity
         void OnMove();
 
         int getType() { return type; }
+        void setUpOrDown(int dir) { upOrDown = dir; }
 
         Uint8 getRed() { return red; }
         Uint8 getGreen() { return green; }
