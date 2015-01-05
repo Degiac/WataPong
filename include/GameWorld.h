@@ -15,7 +15,7 @@ class GameWorld
     protected:
     private:
         void CollisionChecker();
-        void OnEvent();
+        bool OnEvent();
 
         bool paused;
         int ballIdx;

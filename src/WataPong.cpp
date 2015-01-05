@@ -16,7 +16,6 @@ int WataPong::OnExecute()
     {
         Speed::SpeedControl.OnLoop();
         Running = wataWorld.OnLoop();
-        SDL_Delay(20);
     }
 
     return 0;
@@ -30,6 +29,9 @@ bool WataPong::OnInit()
         return false;
     if((wataRenderer = SDL_CreateRenderer(wataWindow, -1, SDL_RENDERER_ACCELERATED)) == NULL)
         return false;
+
+    wataWorld.addEntity(new Entity(FIELD, 1, 0, 0, 800, 20, 0xBA, 0xBA, 0xBA, 0xFF));
+    wataWorld.addEntity(new Entity(FIELD, 1, 0, 480, 800, 20, 0xBA, 0xBA, 0xBA, 0xFF));
 
     wataWorld.addEntity(new Entity(RACKET, 1, 50, 200, 30, RACKET_HEIGHT, 0x5F, 0x5F, 0x5F, 0xFF));
     wataWorld.addEntity(new Entity(RACKET, 1, 730, 200, 30, RACKET_HEIGHT, 0x5F, 0x5F, 0x5F, 0xFF));

@@ -33,6 +33,7 @@ class Entity
 
         int getType() { return type; }
         void setUpOrDown(int dir) { upOrDown = dir; }
+        bool isCollidable() { return collidable; }
 
         Uint8 getRed() { return red; }
         Uint8 getGreen() { return green; }
@@ -41,10 +42,12 @@ class Entity
         void setRed(Uint8 red) { this->red = red; }
         void setGreen(Uint8 green) { this->green = green; }
         void setBlue(Uint8 blue) { this->blue = blue; }
-        void seAlpha(Uint8 alpha) { this->alpha = alpha; }
+        void setAlpha(Uint8 alpha) { this->alpha = alpha; }
 
         SDL_Rect* getRect() { return &rect; }
         void setRect(SDL_Rect rect) { this->rect = rect; }
+        float getX() { return x; }
+        float getY() { return y; }
     protected:
     private:
         bool collidable;

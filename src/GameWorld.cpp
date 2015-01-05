@@ -6,23 +6,24 @@ GameWorld::GameWorld()
 {
     ballIdx = racket1Idx = racket2Idx = -1;
     paused = true;
+    EntityList.reserve(10);
 }
 
 bool GameWorld::OnLoop()
 {
-    OnEvent();
+    bool Running = OnEvent();
 
-    if(paused) return true;
+    if(paused) return Running;
+
+    CollisionChecker();
 
     for(auto i = EntityList.begin(); i != EntityList.end(); ++i)
         i->OnLoop();
 
-    // CollisionChecker();
-
     for(auto i = EntityList.begin(); i != EntityList.end(); ++i)
         i->OnMove();
 
-    return true;
+    return Running;
 }
 
 void GameWorld::addEntity(Entity *newEntity)
@@ -37,18 +38,41 @@ void GameWorld::addEntity(Entity *newEntity)
     }
 }
 
-void GameWorld::OnEvent()
+bool GameWorld::OnEvent()
 {
     SDL_PollEvent(&event);
 
-    if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_p) paused = !paused;
-    else
+    if(event.type == SDL_KEYDOWN)
     {
-        const Uint8* keystate = SDL_GetKeyboardState(NULL);
+        if(event.key.keysym.sym == SDLK_p) paused = !paused;
+        else if(event.key.keysym.sym == SDLK_ESCAPE) return false;
+    }
 
-        if(keystate[SDL_SCANCODE_W]) EntityList[racket1Idx].setUpOrDown(UP);
-        if(keystate[SDL_SCANCODE_S]) EntityList[racket1Idx].setUpOrDown(DOWN);
-        if(keystate[SDL_SCANCODE_DOWN]) EntityList[racket2Idx].setUpOrDown(DOWN);
-        if(keystate[SDL_SCANCODE_UP]) EntityList[racket2Idx].setUpOrDown(UP);
+    const Uint8* keystate = SDL_GetKeyboardState(NULL);
+
+    if(keystate[SDL_SCANCODE_W]) EntityList[racket1Idx].setUpOrDown(UP);
+    if(keystate[SDL_SCANCODE_S]) EntityList[racket1Idx].setUpOrDown(DOWN);
+    if(keystate[SDL_SCANCODE_UP]) EntityList[racket2Idx].setUpOrDown(UP);
+    if(keystate[SDL_SCANCODE_DOWN]) EntityList[racket2Idx].setUpOrDown(DOWN);
+
+    return true;
+}
+
+void GameWorld::CollisionChecker()
+{
+    for(int i = 0; i < (int)EntityList.size(); ++i)
+    {
+        if(!EntityList[i].isCollidable() || i == ballIdx) continue;
+
+        if(SDL_HasIntersection(EntityList[ballIdx].getRect(), EntityList[i].getRect()) == SDL_TRUE)
+        {
+            if(EntityList[i].getType() == RACKET)
+                EntityList[ballIdx].OnCollision(
+                                                (EntityList[ballIdx].getRect()->y +
+                                                EntityList[ballIdx].getRect()->h/2) -
+                                                EntityList[i].getRect()->y );
+            else
+                EntityList[ballIdx].OnCollision();
+        }
     }
 }
