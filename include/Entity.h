@@ -7,12 +7,14 @@
 #include <cmath>
 #include "Speed.h"
 
-const int MAX_ANGLE = 60;
+const int MAX_ANGLE = 70;
 const int RACKET_HEIGHT = 100;
 const int BALL_SPEED = 50;
 const int RACKET_SPEED = 40;
 const int UP = -1;
 const int DOWN = 1;
+const int LEFT = -1;
+const int RIGHT = 1;
 
 enum
 {
@@ -32,7 +34,8 @@ class Entity
         void OnMove();
 
         int getType() { return type; }
-        void setUpOrDown(int dir) { upOrDown = dir; }
+        void setXDir(int dir) { xDir = dir; }
+        void setYDir(int dir) { yDir = dir; }
         bool isCollidable() { return collidable; }
 
         Uint8 getRed() { return red; }
@@ -46,15 +49,19 @@ class Entity
 
         SDL_Rect* getRect() { return &rect; }
         void setRect(SDL_Rect rect) { this->rect = rect; }
+        int getMidPoint() { return (rect.y + rect.h/2); }
         float getX() { return x; }
         float getY() { return y; }
+        void setX(float x) { this->x = x; }
+        void setY(float y) { this->y = y; }
     protected:
     private:
         bool collidable;
 
         int type;
         int angle;
-        int upOrDown;
+        int yDir;
+        int xDir;
 
         float x;
         float y;

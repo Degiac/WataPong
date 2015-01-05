@@ -14,6 +14,8 @@ Entity::Entity(int type, bool collidable, int x, int y, int w, int h, Uint8 red,
     SpeedX = 0;
     SpeedY = 0;
     angle = 0;
+    xDir = 1;
+    yDir = 1;
 
     this->red = red;
     this->green = green;
@@ -23,32 +25,29 @@ Entity::Entity(int type, bool collidable, int x, int y, int w, int h, Uint8 red,
 
 void Entity::OnCollision()
 {
-    angle = (360 - angle%360);
+    if(y < 200)
+        yDir = DOWN;
+    else
+        yDir = UP;
 }
 
 void Entity::OnCollision(int ballOffset)
 {
-    /* If the ball hits the top or the bottom side of a racket **
-    ** it should behave like when it hits the field sides      */
-    if(ballOffset < 0 || ballOffset > RACKET_HEIGHT)
-    {
-        OnCollision();
-        return;
-    }
+    /* Calculates new angle and direction */
+    angle = (2*MAX_ANGLE * ballOffset) / (RACKET_HEIGHT+rect.h);
 
-    /* transforms ballOffset in a value between MAX_ANGLE **
-    **  and -MAX_ANGLE proportional to its value          */
-    ballOffset = (-2 * ballOffset * MAX_ANGLE) / RACKET_HEIGHT + MAX_ANGLE;
-
-    /* calculates the new angle */
-    if(x < 400)
+    if(angle < 0)
     {
-        angle = (ballOffset + 360) % 360;
+        yDir = DOWN;
+        angle = -angle;
     }
     else
-    {
-        angle = 180 - ballOffset;
-    }
+        yDir = UP;
+
+    if(x < 400)
+        xDir = RIGHT;
+    else
+        xDir = LEFT;
 }
 
 void Entity::OnLoop()
@@ -56,13 +55,13 @@ void Entity::OnLoop()
     if(type == BALL)
     {
         /* Calculates the ball's horizontal and vertical speed */
-        SpeedY = BALL_SPEED * -cos((angle-90) * M_PI/180) * Speed::SpeedControl.GetSpeedFactor();
-        SpeedX = BALL_SPEED * -sin((angle-90) * M_PI/180) * Speed::SpeedControl.GetSpeedFactor();
+        SpeedY = BALL_SPEED * yDir * sin(angle * M_PI/180) * Speed::SpeedControl.GetSpeedFactor();
+        SpeedX = BALL_SPEED * xDir * cos(angle * M_PI/180) * Speed::SpeedControl.GetSpeedFactor();
     }
     else if(type == RACKET)
     {
-        SpeedY = upOrDown * RACKET_SPEED * Speed::SpeedControl.GetSpeedFactor();
-        upOrDown = 0;
+        SpeedY = yDir * RACKET_SPEED * Speed::SpeedControl.GetSpeedFactor();
+        yDir = 0;
         if(y + SpeedY > (480 - rect.h) || y + SpeedY < 20) SpeedY = SpeedX = 0;
     }
 

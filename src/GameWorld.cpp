@@ -42,18 +42,28 @@ bool GameWorld::OnEvent()
 {
     SDL_PollEvent(&event);
 
+    if(event.type == SDL_QUIT) return false;
+
     if(event.type == SDL_KEYDOWN)
     {
         if(event.key.keysym.sym == SDLK_p) paused = !paused;
+        if(event.key.keysym.sym == SDLK_r)
+        {
+            paused = true;
+            EntityList[ballIdx].getRect()->x = 385;
+            EntityList[ballIdx].getRect()->y = 235;
+            EntityList[ballIdx].setX(385);
+            EntityList[ballIdx].setY(235);
+        }
         else if(event.key.keysym.sym == SDLK_ESCAPE) return false;
     }
 
     const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
-    if(keystate[SDL_SCANCODE_W]) EntityList[racket1Idx].setUpOrDown(UP);
-    if(keystate[SDL_SCANCODE_S]) EntityList[racket1Idx].setUpOrDown(DOWN);
-    if(keystate[SDL_SCANCODE_UP]) EntityList[racket2Idx].setUpOrDown(UP);
-    if(keystate[SDL_SCANCODE_DOWN]) EntityList[racket2Idx].setUpOrDown(DOWN);
+    if(keystate[SDL_SCANCODE_W]) EntityList[racket1Idx].setYDir(UP);
+    if(keystate[SDL_SCANCODE_S]) EntityList[racket1Idx].setYDir(DOWN);
+    if(keystate[SDL_SCANCODE_UP]) EntityList[racket2Idx].setYDir(UP);
+    if(keystate[SDL_SCANCODE_DOWN]) EntityList[racket2Idx].setYDir(DOWN);
 
     return true;
 }
@@ -67,10 +77,8 @@ void GameWorld::CollisionChecker()
         if(SDL_HasIntersection(EntityList[ballIdx].getRect(), EntityList[i].getRect()) == SDL_TRUE)
         {
             if(EntityList[i].getType() == RACKET)
-                EntityList[ballIdx].OnCollision(
-                                                (EntityList[ballIdx].getRect()->y +
-                                                EntityList[ballIdx].getRect()->h/2) -
-                                                EntityList[i].getRect()->y );
+                EntityList[ballIdx].OnCollision(EntityList[i].getMidPoint() -
+                                                EntityList[ballIdx].getMidPoint());
             else
                 EntityList[ballIdx].OnCollision();
         }
