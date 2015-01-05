@@ -15,13 +15,13 @@ bool GameWorld::OnLoop()
 
     if(paused) return Running;
 
-    CollisionChecker();
-
     for(auto i = EntityList.begin(); i != EntityList.end(); ++i)
         i->OnLoop();
 
     for(auto i = EntityList.begin(); i != EntityList.end(); ++i)
         i->OnMove();
+
+    CollisionChecker();
 
     return Running;
 }

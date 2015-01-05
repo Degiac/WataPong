@@ -5,7 +5,6 @@
 #include "Entity.h"
 #include <SDL.h>
 #include <vector>
-#include <thread>
 
 class WataPong
 {

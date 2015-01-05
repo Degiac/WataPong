@@ -16,7 +16,10 @@ int WataPong::OnExecute()
     {
         Speed::SpeedControl.OnLoop();
         Running = wataWorld.OnLoop();
+        OnRender();
     }
+
+    OnCleanUp();
 
     return 0;
 }
@@ -43,15 +46,11 @@ bool WataPong::OnInit()
 
     wataWorld.addEntity(new Entity(BALL, 1, 385, 235, 30, 30, 0x2B, 0x57, 0x9A, 0xFF));
 
-    std::thread (&WataPong::OnRender, this).detach();
-
     return true;
 }
 
 void WataPong::OnRender()
 {
-    while(Running)
-    {
         SDL_SetRenderDrawColor(wataRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_RenderClear(wataRenderer);
 
@@ -69,12 +68,12 @@ void WataPong::OnRender()
         }
 
         SDL_RenderPresent(wataRenderer);
-    }
 }
 
 void WataPong::OnCleanUp()
 {
-
+    SDL_DestroyRenderer(wataRenderer);
+    SDL_DestroyWindow(wataWindow);
 }
 
 int main(int argc, char *argv[])
