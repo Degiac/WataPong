@@ -1,4 +1,4 @@
-#include "WataPong.h"
+#include "../include/WataPong.h"
 
 WataPong::WataPong()
 {

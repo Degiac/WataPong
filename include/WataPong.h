@@ -4,7 +4,6 @@
 #include "GameWorld.h"
 #include "Entity.h"
 #include <SDL.h>
-#include <vector>
 
 class WataPong
 {
